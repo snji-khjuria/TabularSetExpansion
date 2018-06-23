@@ -13,12 +13,11 @@ def makeSingleObjectExtractions(pageContent, leftPattern, rightPattern):
             endL   = startL+len(leftPattern)
             end    = pageContent.index(rightPattern, endL)
             if end-endL<=1000:
-                output.append(pageContent[endL:end])
+                output.append(pageContent[endL:end].strip())
             searchIndex = startL+1
         except ValueError:
             return list(set(output))
     return list(set(output))
-
 def singleObjectPatternFiltering(patterns, websiteLocation, supervisedFileLocation):
     output = []
     for pattern in patterns:
