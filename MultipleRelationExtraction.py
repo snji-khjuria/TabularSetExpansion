@@ -1,5 +1,5 @@
 #global variables section
-supervisedDataLocation        = "/home/sanjeevk/Desktop/WebsiteSpecificKnowledgeBase/supervisedData"
+supervisedDataLocation        = "./supervisedData"
 supervisedFileName            = "productTables"
 patternsOutputLocation        = "tablePatterns.tsv"
 KEY_VALUE_AWAY_LIMIT          = 100
