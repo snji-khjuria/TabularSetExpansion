@@ -92,3 +92,4 @@ def compressMiddleContexts(contexts):
 #compressing the right contextt is simply get summarization for each of the context independently
 def compressRightContexts(rc):
     return summarizeContexts(rc)
+

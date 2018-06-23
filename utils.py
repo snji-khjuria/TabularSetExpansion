@@ -48,6 +48,16 @@ def writePairPatternsAsCsv(outputLocation, patterns):
         writer = csv.writer(f, delimiter='\t')
         writer.writerows(l)
 
+import csv
+def writePatternsAsCsv(outputLocation, patterns):
+    l = []
+    l.append(["LeftPattern", "RightPattern"])
+    for pattern in patterns:
+        (lp, rp) = pattern
+        l.append([lp, rp])
+    with open(outputLocation, "w") as f:
+        writer = csv.writer(f, delimiter='\t')
+        writer.writerows(l)
 
 def separateLeftMiddleRightContexts(multipleRelationContexts):
     lcs = []
