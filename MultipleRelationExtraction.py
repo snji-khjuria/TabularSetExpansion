@@ -31,6 +31,9 @@ for websiteLocation in websiteLocations:
         for supervisedRelation in supervisedRelationList:
             (key, value)        = supervisedRelation
             contextsPerRelation = getAllContextsForKV(pageContent, key, value, KEY_VALUE_AWAY_LIMIT)
+            #if condition to ignore the number of contexts.
+            if len(contextsPerRelation)<=0:
+                continue
             allRelationContextsPerPage.append(contextsPerRelation)
         corpusLevelRelationContext.extend(allRelationContextsPerPage)
     print("Multiple relation contexts are:- ")

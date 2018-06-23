@@ -7,6 +7,12 @@ def getLeftIndex(l):
 def getRightIndex(r, limit):
     return min(r, limit)
 
+#reverse strings present in list of list elements
+def revLeftContexts(lc):
+    output = []
+    for l in lc:
+        output.append(revStrInList(l))
+    return output
 #reverse all strings present in list
 def revStrInList(l):
     output = []
@@ -26,6 +32,18 @@ def writeTripletPatternsAsCsv(outputLocation, patterns):
     for pattern in patterns:
         (lp, mp, rp) = pattern
         l.append([lp, mp, rp])
+    with open(outputLocation, "w") as f:
+        writer = csv.writer(f, delimiter='\t')
+        writer.writerows(l)
+
+
+
+def writePairPatternsAsCsv(outputLocation, patterns):
+    l = []
+    l.append(["LeftPattern", "RightPattern"])
+    for pattern in patterns:
+        (lp, rp) = pattern
+        l.append([lp, rp])
     with open(outputLocation, "w") as f:
         writer = csv.writer(f, delimiter='\t')
         writer.writerows(l)
@@ -72,3 +90,35 @@ def getAllContextsForKV(pageContent, key, value, KEY_VALUE_AWAY_LIMIT=100):
         if len(middleContext)<=KEY_VALUE_AWAY_LIMIT:
             contexts.append((leftContext, middleContext, rightContext))
     return contexts
+
+CONTEXT_LIMIT                 = 100
+#get contexts for single object
+def getSingleObjectContexts(pageContent, singleObject):
+    contexts                 = []
+    searchLocation           = 0
+    rightContextRangeLimit   = len(pageContent)-1
+    keyLength                = len(singleObject)
+    while(True):
+        loc = pageContent.find(singleObject, searchLocation)
+        if loc==-1:
+            break
+        rightLocStart = loc + keyLength
+        leftContext = pageContent[getLeftIndex(loc-CONTEXT_LIMIT):loc].strip()
+        rightContext = pageContent[rightLocStart:getRightIndex(rightLocStart+CONTEXT_LIMIT, rightContextRangeLimit)].strip()
+        contexts.append((leftContext, rightContext))
+        searchLocation = loc+1
+    return contexts
+
+
+def segmentPairContexts(contexts):
+    lcs = []
+    rcs = []
+    for c in contexts:
+        lc = []
+        rc = []
+        for (a, b) in c:
+            lc.append(a)
+            rc.append(b)
+        lcs.append(lc)
+        rcs.append(rc)
+    return (lcs, rcs)
