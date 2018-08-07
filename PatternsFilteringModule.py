@@ -18,7 +18,8 @@ def makeSingleObjectExtractions(pageContent, leftPattern, rightPattern):
         except ValueError:
             return list(set(output))
     return list(set(output))
-def singleObjectPatternFiltering(patterns, websiteLocation, supervisedFileLocation):
+from StringUtil import replaceNumWordsInStr
+def singleObjectPatternFiltering(patterns, websiteLocation, supervisedFileLocation, preprocessType="None"):
     output = []
     for pattern in patterns:
         (lp, rp) = pattern
@@ -32,6 +33,8 @@ def singleObjectPatternFiltering(patterns, websiteLocation, supervisedFileLocati
                 singleObj = contentList[0]
             goldContent = " ".join(singleObj.split())
             pageContent = readPlainHtmlPageContent(exactPageLocation)
+            if preprocessType == "NUM":
+                pageContent = replaceNumWordsInStr(pageContent)
             results     = makeSingleObjectExtractions(pageContent, lp, rp)
             if goldContent in results:
                 patternScore+=1

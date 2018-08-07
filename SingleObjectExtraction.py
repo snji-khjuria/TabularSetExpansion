@@ -25,6 +25,9 @@ from FileUtil import getAllPagesInsideWebsite, readPlainHtmlPageContent
 from FileUtil import readFileContentInList
 from utils import getSingleObjectContexts, writePairPatternsAsCsv
 from SingleObjectPatternsLearningUtil import  learnPatterns
+from utils import appendPreprocessType
+from utils import  processNumInContext
+
 websiteLocations = getWebsiteLocations(supervisedDataLocation)
 print(websiteLocations)
 for websiteLocation in websiteLocations:
@@ -48,13 +51,24 @@ for websiteLocation in websiteLocations:
     print("Single object contexts are:- ")
     print(singleObjectContexts)
     patterns         = learnPatterns(singleObjectContexts)
+
     print("Finally we have learnt the patterns...")
     filteredPatterns = singleObjectPatternFiltering(patterns, websiteLocation, supervisedFileName)
+    filteredPatterns = appendPreprocessType(filteredPatterns, "None")
+    #getting the num processed patterns
+    numProcessedCorpusLevelRelationContext = processNumInContext(singleObjectContexts)
+    numProcessedPatterns = learnPatterns(numProcessedCorpusLevelRelationContext)
+    print("Num processed patterns:- ")
+    print(numProcessedPatterns)
+    print(filteredPatterns)
+    numProcessedPatterns = singleObjectPatternFiltering(numProcessedPatterns, websiteLocation, supervisedFileName, "NUM")
+    numProcessedPatterns = appendPreprocessType(numProcessedPatterns, "NUM")
     print("Patterns are:- ")
     print(patterns)
     print("FilteredPatterns are:- ")
     print(filteredPatterns)
     # filteredPatterns = patterns
+    filteredPatterns.extend(numProcessedPatterns)
     writePairPatternsAsCsv(websiteLocation+"/" + patternsOutputLocation, filteredPatterns)
     print("Patterns written at:- " + websiteLocation + "/" + patternsOutputLocation)
 

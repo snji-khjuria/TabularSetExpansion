@@ -24,14 +24,29 @@ def getCommonPrefix(s1, s2):
     l = [s1, s2]
     return os.path.commonprefix(l)
 
+from StringUtil import replaceNumWordsInStr
+def processNumInContext(corpusLevelContext):
+    output = []
+    for seedLevelContext in corpusLevelContext:
+        seedLevelOutput = []
+        for eachPattern in seedLevelContext:
+            patternAsList = list(eachPattern)
+            pOutputAsList = []
+            for item in patternAsList:
+                item = replaceNumWordsInStr(item)
+                pOutputAsList.append(item)
+            seedLevelOutput.append(tuple(pOutputAsList))
+        output.append(seedLevelOutput)
+    return output
+
 
 import csv
 def writeTripletPatternsAsCsv(outputLocation, patterns):
     l = []
-    l.append(["LeftPattern", "MiddlePattern", "RightPattern"])
+    l.append(["LeftPattern", "MiddlePattern", "RightPattern", "TextProcessing"])
     for pattern in patterns:
-        (lp, mp, rp) = pattern
-        l.append([lp, mp, rp])
+        (lp, mp, rp, textProcessing) = pattern
+        l.append([lp, mp, rp, textProcessing])
     with open(outputLocation, "w") as f:
         writer = csv.writer(f, delimiter='\t')
         writer.writerows(l)
@@ -40,10 +55,10 @@ def writeTripletPatternsAsCsv(outputLocation, patterns):
 
 def writePairPatternsAsCsv(outputLocation, patterns):
     l = []
-    l.append(["LeftPattern", "RightPattern"])
+    l.append(["LeftPattern", "RightPattern", "TextProcessing"])
     for pattern in patterns:
-        (lp, rp) = pattern
-        l.append([lp, rp])
+        (lp, rp, textProcesssing) = pattern
+        l.append([lp, rp, textProcesssing])
     with open(outputLocation, "w") as f:
         writer = csv.writer(f, delimiter='\t')
         writer.writerows(l)
@@ -51,10 +66,10 @@ def writePairPatternsAsCsv(outputLocation, patterns):
 import csv
 def writePatternsAsCsv(outputLocation, patterns):
     l = []
-    l.append(["LeftPattern", "RightPattern"])
+    l.append(["LeftPattern", "RightPattern", "TextProcessing"])
     for pattern in patterns:
-        (lp, rp) = pattern
-        l.append([lp, rp])
+        (lp, rp, textProcessing) = pattern
+        l.append([lp, rp, textProcessing])
     with open(outputLocation, "w") as f:
         writer = csv.writer(f, delimiter='\t')
         writer.writerows(l)
@@ -100,6 +115,15 @@ def getAllContextsForKV(pageContent, key, value, KEY_VALUE_AWAY_LIMIT=100):
         if len(middleContext)<=KEY_VALUE_AWAY_LIMIT:
             contexts.append((leftContext, middleContext, rightContext))
     return contexts
+
+def appendPreprocessType(patterns, pType):
+    output = []
+    for p in patterns:
+        p = list(p)
+        p.append(pType)
+        output.append(tuple(p))
+    return output
+
 
 CONTEXT_LIMIT                 = 100
 #get contexts for single object

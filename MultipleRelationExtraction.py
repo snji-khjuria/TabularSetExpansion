@@ -10,12 +10,11 @@ from utils    import writeTripletPatternsAsCsv, getAllContextsForKV
 from FileUtil import getWebsiteLocations, getAllPagesInsideWebsite, readPlainHtmlPageContent
 from FileUtil import readFileRelationContentInList
 from RelationPatternsLearningUtil import learnPatterns
-
+from utils import processNumInContext
 #get all the locations for website so that we can start extracting the patterns for them.
 websiteLocations = getWebsiteLocations(supervisedDataLocation)
 print(websiteLocations)
-
-
+from utils import appendPreprocessType
 #work for each website independently
 for websiteLocation in websiteLocations:
     pages                    = getAllPagesInsideWebsite(websiteLocation)
@@ -34,6 +33,8 @@ for websiteLocation in websiteLocations:
             #if condition to ignore the number of contexts.
             if len(contextsPerRelation)<=0:
                 continue
+            print("Contexts per relation are:- ")
+            print(contextsPerRelation)
             allRelationContextsPerPage.append(contextsPerRelation)
         corpusLevelRelationContext.extend(allRelationContextsPerPage)
     print("Multiple relation contexts are:- ")
@@ -43,9 +44,16 @@ for websiteLocation in websiteLocations:
     #[[(left, middle, right)], [(l, m, r), (l, m, r)]]
     print(corpusLevelRelationContext)
     print("We are gonna learn patterns for this set of contexts...")
-    patterns = learnPatterns(corpusLevelRelationContext)
+    patterns                               = learnPatterns(corpusLevelRelationContext)
+    patterns = appendPreprocessType(patterns, "None")
+    numProcessedCorpusLevelRelationContext = processNumInContext(corpusLevelRelationContext)
+    numProcessedPatterns = learnPatterns(numProcessedCorpusLevelRelationContext)
+    numProcessedPatterns = appendPreprocessType(numProcessedPatterns, "NUM")
     print("Patterns learnt are:- ")
     print(patterns)
+    print("Patterns are of lenght " + str(len(patterns)))
     print("We are gonna write patterns to file now...")
+    patterns.extend(numProcessedPatterns)
     writeTripletPatternsAsCsv(websiteLocation + "/" + patternsOutputLocation, patterns)
+    # writeTripletPatternsAsCsv(websiteLocation + "/" + patternsOutputLocation, patterns)
     print("Patterns written at location:- " + websiteLocation + "/" + patternsOutputLocation)
